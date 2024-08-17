@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dibujador de Figuras</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dibujador de Figuras</h1>
+    <h4>Hecho por Luis Miguel Castiblanco</h4>
+    <form id="figuraForm">
+        <label for="tipo">Tipo de figura:</label>
+        <select id="tipo">
+            <option value="cuadrado">Cuadrado</option>
+            <option value="circulo">Círculo</option>
+            <option value="triangulo">Triángulo</option>
+            <option value="pentagono">Pentágono</option>
+            <option value="hexagono">Hexágono</option>
+            <option value="heptagono">Heptágono</option>
+            <option value="octagono">Octágono</option>
+        </select><br>
+
+        <h3>Coordenadas Cartesianas</h3>
+
+        <label for="x">Posición X (px):</label>
+        <input type="number" id="x" min="0" value="50"><br><br>
+        <label for="y">Posición Y (px):</label>
+        <input type="number" id="y" min="0" value="50"><br>
+
+        <h3>Coordenadas Polares</h3>
+
+        <label for="radio">Radio (px):</label>
+        <input type="number" id="radio" min="0" value="100"><br><br>
+        <label for="angulo">Ángulo (grados):</label>
+        <input type="number" id="angulo" min="0" max="360" value="0"><br><br>
+        <br>
+        <label for="rotacion">Rotación (grados):</label>
+        <input type="number" id="rotacion" min="0" max="360" value="0"><br><br>
+
+        <label for="tamaño">Tamaño (px):</label>
+        <input type="number" id="tamaño" min="1" value="50"><br><br>
+
+        <label for="colorFigura">Color de la figura:</label>
+        <input type="color" id="colorFigura" value="#FFFFFF"><br><br>
+
+        <label for="colorBorde">Color del borde:</label>
+        <input type="color" id="colorBorde" value="#000000"><br><br>
+
+        <button type="button" onclick="dibujarFigura()">Dibujar Figura</button>
+        <button type="button" onclick="borrarUltimaFigura()">Borrar Última Figura</button>
+        <button type="button" onclick="borrarTodasFiguras()">Borrar Todas las Figuras</button>
+        <button type="button" onclick="vectorizar()">Vectorizar en SVG</button>
+    </form>
+
+    <canvas id="miCanvas" width="800" height="600"></canvas>
+
+    <script src = "Figuras2D.js"></script>
+
+</body>
+</html>
