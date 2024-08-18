@@ -2,10 +2,12 @@ Conceptos fundamentales - Luis Miguel Castiblanco
 
 -------- Parte 1 HTML ----------
 
-"<!DOCTYPE html>": Declara el tipo de documento y la versión de HTML.
-"<html lang="es">": Indica que el idioma del contenido está en español.
+    Para esta primera parte, se va a detallar el funcionamiento de cada etiqueta encontrada en el código html, para así entender las especificaciones graficas que se encuentran en la interfaz desarrollada.
 
-"<head>": Contiene información meta y recursos de la página.
+    "<!DOCTYPE html>": Declara el tipo de documento y la versión de HTML.
+    "<html lang="es">": Indica que el idioma del contenido está en español.
+
+    "<head>": Contiene información meta y recursos de la página.
 
     "<meta charset="UTF-8">": Define la codificación de caracteres como UTF-8 (Secuencias de 8 bits para modificar caracteres).
     "<meta name="viewport" content="width=device-width, initial-scale=1.0">": Establece el viewport para que el diseño sea responsivo en dispositivos móviles.
@@ -14,7 +16,7 @@ Conceptos fundamentales - Luis Miguel Castiblanco
     "body { font-family: Arial, sans-serif; margin: 20px; }": Define la fuente del texto, en este caso Arial, y el margen del cuerpo de la página.
     "canvas { border: 1px solid black; }": Da un borde negro al elemento "<canvas>", es decir, al lienzo donde se dibujan las figuras 2D.
 
-"<body>": Contiene el contenido visible de la página.
+    "<body>": Contiene el contenido visible de la página.
 
     "Las etiquetas <h1></h1> - <h6></h6> se emplean para titulos o subtitulos, según su tamaño.
     "<form id="figuraForm">": Define un formulario con el id figuraForm para recopilar información del usuario.
@@ -60,4 +62,40 @@ Conceptos fundamentales - Luis Miguel Castiblanco
     "<script src = "Figuras2D.js"></script>": Se usa para incluir y ejecutar el código de JavaScript en el documento html.
 
 ------- Parte 2 JavaScript -------
-   
+
+    "let figuras = [];": Arreglo vacío para almacenar las figuras y sus especificaciones (tamaño, posición)
+
+    La parte de JavaScript se basa principalmente en el uso de funciones que se emplean apartir de los parámetros dados por el usuario en los controles de formulario puestos en la interfaz creada con html. Mediante los valores que se asignan en la página web dinámica, las funciones o métodos en JavaScript permiten desarrollar, trazar y almacenar las figuras. Es decir, de forma general, JavaScript es la parte logica del programa y el código HTML se encarga de mostrar y recolectar los valores para las funciones. Algunas de las funciones en el código JavaScript son:
+
+    - Función dibujarFigura: Recoge valores de un formulario, convierte coordenadas polares a cartesianas para ubicar la figura, almacena estos datos en el arreglo figuras, y luego llama a redibujarCanvas para actualizar el lienzo con todas las figuras.
+
+    - Función redibujarCanvas: Borra el lienzo y vuelve a dibujar todas las figuras almacenadas en el arreglo figuras. Ajusta el contexto del lienzo para dibujar cada figura en su posición y rotación especificada, y soporta figuras básicas (cuadrado, círculo, triángulo) así como polígonos con varios lados.
+
+    - Función borrarUltimaFigura: Elimina la última figura del arreglo y actualiza el lienzo para reflejar el cambio.
+
+    - Función borrarTodasFiguras: Limpia el arreglo figuras y redibuja el lienzo, eliminando todas las figuras.
+
+    - Función vectorizar: Genera un archivo SVG con las figuras almacenadas. Convierte cada figura a un formato SVG adecuado y crea un archivo descargable.
+
+    Así mismo, es importante conocer los comandos que se emplean para dar desarrollo a la función/Método definido. Por ejemplo:
+
+    "const canvas = document.getElementById('miCanvas');": Obtener elemento del canvas.
+    "const ctx = canvas.getContext('2d');": Obtener el contexto del canvas.
+    "const tipo = document.getElementById('tipo').value;" se emplea para obtener los valores asignados por el usuario en la interfaz. 
+    "figuras.push({ tipo, x: xPolar, y: yPolar, tamaño, rotacion, colorFigura, colorBorde });" Almacena ls propiedades de las figuras y se agrega a la lista "Figuras". 
+
+    Por otro lado, JavaScript para gestionar y dibujar figuras en el lienzo (canvas), y para exportarlas como archivos SVG, utiliza:
+
+    - getElementById: Este método recupera elementos del DOM por su identificador, como el lienzo (canvas) y los campos del formulario. Es esencial para interactuar con la interfaz de usuario y obtener datos para procesar.
+
+    - getContext('2d'): Obtiene el contexto de dibujo en 2D del lienzo. Este contexto proporciona métodos para dibujar y manipular gráficos, como fillRect, arc, y lineTo.
+
+    - clearRect: Limpia un área del lienzo. Se usa para borrar el contenido anterior antes de redibujar las figuras, asegurando que no queden trazas de dibujos previos.
+
+    - save y restore: Guardan y restauran el estado del contexto de dibujo. Se utilizan para aplicar transformaciones (como rotación y traslación) sin afectar otros elementos del lienzo.
+
+    - translate y rotate: Ajustan el origen del contexto y aplican rotaciones a las figuras. translate mueve el origen del sistema de coordenadas, y rotate gira el contexto en torno al nuevo origen.
+
+    - beginPath, moveTo, lineTo, closePath, fill, stroke: Estos métodos se usan para crear y dibujar formas. beginPath inicia un nuevo camino de dibujo, moveTo y lineTo definen los puntos del camino, y fill y stroke aplican el color de relleno y borde.
+
+    - Blob, URL.createObjectURL, download: Utilizados en la función vectorizar para crear y descargar un archivo SVG que contiene las figuras. Blob crea un objeto de datos, URL.createObjectURL genera una URL para ese objeto, y download inicia la descarga del archivo.
