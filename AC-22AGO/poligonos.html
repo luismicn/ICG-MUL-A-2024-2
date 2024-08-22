@@ -3,20 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trazado de poligonos regulares</title>
+    <title>Dibujar Polígonos</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
         canvas {
             border: 1px solid black;
+            display: block;
+            margin: 0 auto;
+            background-color: #f0f0f0;
+        }
+        #controls {
+            text-align: center;
+            margin: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Trazado de poligonos regulares</h1>
+    <h1>Trazado de polígonos regulares</h1>
+    <br>
+    <div id="controls">
+        <label for="sides">Número de lados:</label>
+        <input type="number" id="sides" value="0" min="3" max="1000000000">
+        <br><br>
+        <label for="length">Medida del lado:</label>
+        <input type="number" id="length" value="0" min="10">
+        <br><br>
+        <label for="rotacion">Rotación (grados):</label>
+        <input type="number" id="rotacion" min="0" max="360" value="0"><br><br>
+        <br><br>
+        <button onclick="drawPolygon()">Dibujar Polígono</button>
+        <button type="button" onclick="borrarUltimaFigura()">Borrar Última Figura</button>
+        <button type="button" onclick="borrarTodasFiguras()">Borrar Todas las Figuras</button>
+    </div>
+    <canvas id="polygonCanvas" width="600" height="600"></canvas>
 
-    <form id="figuraForm">
-        <label>Número de lados:</label>
-        <input type="number" id="lados" min="0" value="10000"><br><br>
+    <script>
+        let figuras = []; // Arreglo para almacenar las figuras dibujadas
+
+        function drawPolygon() {
+            const canvas = document.getElementById('polygonCanvas');
+            const ctx = canvas.getContext('2d');
+            const sides = parseInt(document.getElementById('sides').value);
+            const length = parseInt(document.getElementById('length').value);
+            const rotacion = parseInt(document.getElementById('rotacion').value);
+
+            // Limpiar el canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Coordenadas centrales del canvas
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            const radius = length / (2 * Math.sin(Math.PI / sides));
+
+            // Guardar el estado actual del canvas
+            ctx.save();
+
+            // Aplicar rotación
+            ctx.translate(centerX, centerY);
+            ctx.rotate((rotacion * Math.PI) / 180);
+            ctx.translate(-centerX, -centerY);
+
+            // Dibujar el polígono
+            ctx.beginPath();
+            for (let i = 0; i < sides; i++) {
+                const angle = (2 * Math.PI / sides) * i;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.closePath();
+            ctx.strokeStyle = 'black';
+            ctx.stroke();
+
+            // Restaurar el estado del canvas
+            ctx.restore();
+
+            // Guardar la figura dibujada
+            figuras.push({ sides, length, rotacion });
+        }
+
+        function borrarUltimaFigura() {
+            // Eliminar la última figura del arreglo
+            figuras.pop();
+            // Redibujar el canvas
+            redibujarCanvas();
+        }
+
+        function borrarTodasFiguras() {
+            // Vaciar el arreglo de figuras
+            figuras = [];
+            // Redibujar el canvas
+            redibujarCanvas();
+        }
+
+        function redibujarCanvas() {
+            const canvas = document.getElementById('polygonCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Redibujar todas las figuras almacenadas
+            for (const figura of figuras) {
+                const { sides, length, rotacion } = figura;
+
+                // Coordenadas centrales del canvas
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+
+                const radius = length / (2 * Math.sin(Math.PI / sides));
+
+                // Guardar el estado actual del canvas
+                ctx.save();
+
+                // Aplicar rotación
+                ctx.translate(centerX, centerY);
+                ctx.rotate((rotacion * Math.PI) / 180);
+                ctx.translate(-centerX, -centerY);
+
+                // Dibujar el polígono
+                ctx.beginPath();
+                for (let i = 0; i < sides; i++) {
+                    const angle = (2 * Math.PI / sides) * i;
+                    const x = centerX + radius * Math.cos(angle);
+                    const y = centerY + radius * Math.sin(angle);
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.closePath();
+                ctx.strokeStyle = 'black';
+                ctx.stroke();
+
+                // Restaurar el estado del canvas
+                ctx.restore();
+            }
+        }
+
+        // Dibuja el polígono por defecto cuando se carga la página
+        window.onload = drawPolygon;
+    </script>
+</body>
+</html>
