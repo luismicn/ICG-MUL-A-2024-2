@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practica Tema A</title>
+    <style>
+        /* Estilos para el cuerpo del documento */
+        body {
+            display: flex; /* Usa el modelo de caja flexible para alinear el contenido */
+            flex-direction: column; /* Coloca los elementos hijos en una columna */
+            align-items: center; /* Centra los elementos hijos horizontalmente */
+            justify-content: center; /* Centra los elementos hijos verticalmente */
+            height: 100vh; /* Establece la altura del cuerpo para ocupar toda la altura de la ventana */
+            margin: 150px; /* Margen alrededor del cuerpo */
+            font-family: Arial, sans-serif; /* Establece la fuente del texto */
+            background-color: #ffffff; /* Establece el color de fondo del cuerpo */
+        }
+        /* Estilos para el canvas */
+        canvas {
+            border: 2px solid black; /* Agrega un borde negro de 2px al canvas */
+            display: block; /* Elimina el espacio adicional alrededor del canvas */
+            margin: 0 auto; /* Centra el canvas horizontalmente */
+            background-color: #f6feff; /* Establece el color de fondo del canvas */
+        }
+        /* Estilos para el contenedor de los controles */
+        #controls {
+            text-align: center; /* Centra el texto dentro del contenedor */
+            margin: 20px; /* Agrega un margen alrededor del contenedor */
+        }
+    </style>
+</head>
+<body>
+    <br>
+    <h1>Trazado de polígonos regulares</h1>
+    <div id="controls">
+        <!-- Etiqueta para el número de lados del polígono -->
+        <label for="sides">Número de lados:</label>
+        <input type="number" id="sides" value="0" min="3" max="10000">
+        <br><br>
+        <!-- Etiqueta para la medida del apotema -->
+        <label for="apotema">Medida del Apotema:</label>
+        <input type="number" id="apotema" step="0.1">
+        <br><br>
+        <!-- Botón para dibujar el polígono -->
+        <button onclick="handleDrawPolygon()">Dibujar Polígono</button>
+        <!-- Botón para limpiar el canvas -->
+        <button type="button" onclick="handleClearCanvas()">Limpiar Canvas</button>
+    </div>
+    <!-- Elemento canvas donde se dibujará el polígono -->
+    <canvas id="Canvas" width="700" height="700"></canvas>
+    <h5>Hecho por: Luis Miguel Castiblanco - 6000964</h5>
+
+    <script>
+        /**
+         * Calcula los vértices de un polígono regular dado el número de lados y la medida del apotema.*/
+
+        function calculatePolygonVertices(sides, apotema) { //FUNCIÓN PURA
+            // Coordenadas del centro del canvas
+            const centerX = 350; // Canvas width / 2
+            const centerY = 350; // Canvas height / 2
+            // Calcular el radio del polígono desde el apotema
+            const radio = apotema / Math.cos(Math.PI / sides);
+            // Calcular la rotación inicial para alinear el primer lado horizontalmente
+            const initialRotation = Math.PI / 2 + Math.PI / sides;
+
+            // Array para almacenar los vértices del polígono
+            const vertices = [];
+            // Calcular las coordenadas de cada vértice
+            for (let i = 0; i < sides; i++) {
+                const angle = initialRotation + (2 * Math.PI / sides) * i;
+                const x = centerX + radio * Math.cos(angle);
+                const y = centerY + radio * Math.sin(angle);
+                vertices.push({ x, y });
+            }
+            return vertices;
+        }
+
+        /**
+         * Dibuja un polígono en el contexto del canvas usando los vértices proporcionados.
+         * @param {CanvasRenderingContext2D} ctx - El contexto del canvas donde se dibujará el polígono.
+         * @param {Array} vertices - Array de objetos que representan las coordenadas de los vértices del polígono.
+         */
+        function drawPolygon(ctx, vertices) {
+            // Iniciar el trazado del polígono
+            ctx.beginPath();
+            // Dibujar líneas entre los vértices
+            vertices.forEach((vertex, index) => {
+                if (index === 0) {
+                    ctx.moveTo(vertex.x, vertex.y);
+                } else {
+                    ctx.lineTo(vertex.x, vertex.y);
+                }
+            });
+            // Cerrar el trazado del polígono y aplicar el estilo
+            ctx.closePath();
+            ctx.strokeStyle = 'black'; // Color del borde del polígono
+            ctx.stroke(); // Dibujar el polígono en el canvas
+        }
+
+        /**
+         * Maneja el evento de dibujo del polígono.
+         * Obtiene los valores de los inputs, calcula los vértices y dibuja el polígono en el canvas.
+         */
+        function handleDrawPolygon() {
+            const canvas = document.getElementById('Canvas'); // Obtener el canvas
+            const ctx = canvas.getContext('2d'); // Obtener el contexto de dibujo 2D del canvas
+            const sides = parseInt(document.getElementById('sides').value); // Obtener el número de lados del input
+            const apotema = parseFloat(document.getElementById('apotema').value); // Obtener la medida del apotema del input
+
+            // Validar los valores ingresados
+            if (isNaN(sides) || isNaN(apotema) || sides < 3 || apotema <= 0) {
+                alert("Por favor, ingrese valores válidos."); // Mostrar alerta si los valores no son válidos
+                return;
+            }
+
+            // Calcular los vértices del polígono
+            const vertices = calculatePolygonVertices(sides, apotema);
+
+            // Limpiar el canvas antes de dibujar el nuevo polígono
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Dibujar el polígono en el canvas
+            drawPolygon(ctx, vertices);
+        }
+
+        /**
+         * Maneja el evento de limpieza del canvas.
+         * Limpia el contenido del canvas sin necesidad de redibujar.
+         */
+        function handleClearCanvas() {
+            const canvas = document.getElementById('Canvas'); // Obtener el canvas
+            const ctx = canvas.getContext('2d'); // Obtener el contexto de dibujo 2D del canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el contenido del canvas
+        }
+    </script>
+</body>
+</html>
