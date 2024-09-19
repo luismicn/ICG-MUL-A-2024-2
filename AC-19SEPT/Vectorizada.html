@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!-- Indica que este documento es un documento HTML5 -->
+
+<html lang="es">
+<!-- Define el idioma del contenido como español -->
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Establece la codificación de caracteres en UTF-8, que soporta caracteres especiales -->
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Hace que el sitio sea responsivo, ajustando el ancho a la pantalla del dispositivo -->
+    
+    <title>Primitivas de Graficación Vectorizada (SVG)</title>
+    <!-- Título de la página que se muestra en la pestaña del navegador -->
+</head>
+
+<body>
+    <!-- Contenido del cuerpo de la página -->
+
+    <svg id="svgCanvas" width="500" height="500" style="border:1px solid black"></svg>
+    <!-- Elemento SVG donde se dibujarán las primitivas:
+         - id="svgCanvas": permite que el script JavaScript acceda a este elemento.
+         - width y height: establecen el tamaño del canvas SVG en 500x500 píxeles.
+         - style: agrega un borde negro alrededor del canvas para visualizarlo mejor. -->
+
+    <script src="script.js"></script>
+    <!-- Incluye el archivo JavaScript externo "script.js" que contiene la lógica para dibujar las primitivas SVG -->
+</body>
+</html>
