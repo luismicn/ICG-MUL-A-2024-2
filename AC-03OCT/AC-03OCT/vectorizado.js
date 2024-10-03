@@ -1,4 +1,3 @@
-// Clase Punto con encapsulamiento
 class Punto {
     #x;
     #y;
@@ -17,129 +16,108 @@ class Punto {
     }
 }
 
-// Clase para generar y manejar puntos
-class GeneradorPuntos {
-    static generarPuntos(numPuntos) {
+class Poligono {
+    #svg;
+    #result;
+    #centroide;
+    #puntos; // Guardamos los puntos generados
+    #centroideVisible; // Estado de visibilidad del centroide
+
+    constructor(svgElement, resultElement) {
+        this.#svg = svgElement;
+        this.#result = resultElement;
+        this.#centroide = null; // Inicializamos el centroide como null
+        this.#puntos = []; // Inicializamos los puntos como un arreglo vacío
+        this.#centroideVisible = false; // Inicializamos el estado de visibilidad del centroide
+    }
+
+    #generarPuntos(cantidad) {
         const puntos = [];
-        for (let i = 0; i < numPuntos; i++) {
-            const x = Math.floor(Math.random() * 700) + 50; // Mantener los puntos dentro del SVG
-            const y = Math.floor(Math.random() * 700) + 50; // Ajustado para el alto del SVG
+        const margen = 20; // Margen para evitar que los puntos se salgan
+        const ancho = this.#svg.width.baseVal.value - margen * 2;
+        const alto = this.#svg.height.baseVal.value - margen * 2;
+
+        for (let i = 0; i < cantidad; i++) {
+            const x = Math.random() * ancho + margen; // Mantener dentro de los márgenes
+            const y = Math.random() * alto + margen; // Mantener dentro de los márgenes
             puntos.push(new Punto(x, y));
         }
         return puntos;
     }
 
-    static calcularCentroide(puntos) {
-        let sumaX = 0, sumaY = 0;
-        for (const punto of puntos) {
-            sumaX += punto.getX();
-            sumaY += punto.getY();
-        }
-        return new Punto(sumaX / puntos.length, sumaY / puntos.length);
-    }
-}
-
-// Clase para ordenar puntos
-class Ordenador {
-    static ordenar(puntos) {
-        const centroide = GeneradorPuntos.calcularCentroide(puntos);
-        return puntos.sort((a, b) => {
-            const anguloA = Math.atan2(a.getY() - centroide.getY(), a.getX() - centroide.getX());
-            const anguloB = Math.atan2(b.getY() - centroide.getY(), b.getX() - centroide.getX());
-            return anguloA - anguloB;
-        });
-    }
-}
-
-// Clase para dibujar el polígono utilizando SVG
-class DibujadorPoligono {
-    static dibujar(puntos) {
-        const svg = document.getElementById('polygonSvg');
-        svg.innerHTML = ''; // Limpiar el SVG
-
-        // Dibuja los puntos como cuadrados
-        puntos.forEach(punto => {
-            const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-            rect.setAttribute("x", punto.getX() - 5);
-            rect.setAttribute("y", punto.getY() - 5);
-            rect.setAttribute("width", 10);
-            rect.setAttribute("height", 10);
-            rect.setAttribute("fill", "black");
-            svg.appendChild(rect);
-        });
-
-        // Dibuja el polígono conectando los puntos
-        let pathData = `M ${puntos[0].getX()} ${puntos[0].getY()}`;
-        for (let i = 1; i < puntos.length; i++) {
-            pathData += ` L ${puntos[i].getX()} ${puntos[i].getY()}`;
-        }
-        pathData += ' Z'; // Cierra el polígono
-
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute("d", pathData);
-        path.setAttribute("fill", "none");
-        path.setAttribute("stroke", "blue");
-        svg.appendChild(path);
+    #calcularCentroide(puntos) {
+        const sumaX = puntos.reduce((sum, punto) => sum + punto.getX(), 0);
+        const sumaY = puntos.reduce((sum, punto) => sum + punto.getY(), 0);
+        const centroideX = sumaX / puntos.length;
+        const centroideY = sumaY / puntos.length;
+        return new Punto(centroideX, centroideY);
     }
 
-    static dibujarCentroide(centroide) {
-        const svg = document.getElementById('polygonSvg');
-        const cx = centroide.getX();
-        const cy = centroide.getY();
-        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle.setAttribute("cx", cx);
-        circle.setAttribute("cy", cy);
-        circle.setAttribute("r", 5);
-        circle.setAttribute("class", "centroide");
-        svg.appendChild(circle);
-    }
-}
+    #dibujarPoligono() {
+        const cantidad = parseInt(document.getElementById('cantidadPuntos').value);
+        this.#puntos = this.#generarPuntos(cantidad); // Guardamos los puntos generados
 
-// Clase para analizar si el polígono es convexo o cóncavo
-class AnalizadorPoligono {
-    static esConvexo(puntos) {
-        function crossProduct(o, a, b) {
-            return (a.getX() - o.getX()) * (b.getY() - o.getY()) - (a.getY() - o.getY()) * (b.getX() - o.getX());
+        // Limpiar SVG
+        this.#svg.innerHTML = '';
+
+        const pathData = this.#puntos.map((p, index) => 
+            `${index === 0 ? 'M' : 'L'} ${p.getX()},${p.getY()}`
+        ).join(' ') + ' Z';
+
+        const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        polygon.setAttribute('d', pathData);
+        polygon.setAttribute('stroke', 'black');
+        polygon.setAttribute('fill', 'rgba(0, 0, 255, 0.3)');
+        this.#svg.appendChild(polygon);
+
+        // Calcular el centroide
+        this.#centroide = this.#calcularCentroide(this.#puntos);
+
+        this.#result.textContent = ''; // Limpiar resultado
+    }
+
+    mostrarPoligono() {
+        this.#dibujarPoligono();
+    }
+
+    mostrarCentroide() {
+        if (!this.#centroide) return; // Si no hay centroide, salir
+
+        if (this.#centroideVisible) {
+            // Si el centroide ya es visible, lo ocultamos
+            const lines = this.#svg.querySelectorAll('line');
+            lines.forEach(line => line.remove());
+            const centroideCircle = this.#svg.querySelector('circle');
+            if (centroideCircle) centroideCircle.remove();
+            this.#result.textContent = ''; // Limpiar resultado
+        } else {
+            // Dibujar líneas desde cada punto al centroide
+            this.#puntos.forEach(p => {
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', p.getX());
+                line.setAttribute('y1', p.getY());
+                line.setAttribute('x2', this.#centroide.getX());
+                line.setAttribute('y2', this.#centroide.getY());
+                line.setAttribute('stroke', 'red');
+                this.#svg.appendChild(line);
+            });
+
+            const centroideCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            centroideCircle.setAttribute('cx', this.#centroide.getX());
+            centroideCircle.setAttribute('cy', this.#centroide.getY());
+            centroideCircle.setAttribute('r', 7);
+            centroideCircle.setAttribute('fill', 'green');
+            this.#svg.appendChild(centroideCircle);
         }
 
-        const n = puntos.length;
-        let crossProducts = [];
-        
-        for (let i = 0; i < n; i++) {
-            const o = puntos[i];
-            const a = puntos[(i + 1) % n];
-            const b = puntos[(i + 2) % n];
-            crossProducts.push(crossProduct(o, a, b));
-        }
-
-        const positivo = crossProducts.every(cp => cp > 0);
-        const negativo = crossProducts.every(cp => cp < 0);
-        return positivo || negativo ? "Convexo" : "Cóncavo";
+        // Cambiar el estado de visibilidad del centroide
+        this.#centroideVisible = !this.#centroideVisible;
     }
 }
 
-// Función principal para generar el polígono y verificar su tipo
-let puntosGenerados = [];
+const svg = document.getElementById('polygonSvg');
+const result = document.getElementById('result');
+const poligono = new Poligono(svg, result);
 
-function main() {
-    const cantidadSeleccionada = parseInt(document.getElementById('cantidadPuntos').value);
-    puntosGenerados = GeneradorPuntos.generarPuntos(cantidadSeleccionada);
-    puntosGenerados = Ordenador.ordenar(puntosGenerados);
-    DibujadorPoligono.dibujar(puntosGenerados);
-    const tipoPoligono = AnalizadorPoligono.esConvexo(puntosGenerados);
-    document.getElementById('result').innerText = `El polígono es ${tipoPoligono}.`;
-}
-
-// Evento para el botón de restaurar
-document.getElementById('restoreButton').addEventListener('click', () => {
-    main();
-});
-
-// Evento para el botón de mostrar centroide
-document.getElementById('centroideButton').addEventListener('click', () => {
-    const centroide = GeneradorPuntos.calcularCentroide(puntosGenerados);
-    DibujadorPoligono.dibujarCentroide(centroide);
-});
-
-// Generar el polígono al cargar la página
-window.onload = main;
+document.getElementById('restoreButton').onclick = () => poligono.mostrarPoligono();
+document.getElementById('centroideButton').onclick = () => poligono.mostrarCentroide();

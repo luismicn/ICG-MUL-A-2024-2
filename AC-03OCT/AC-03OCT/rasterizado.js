@@ -20,11 +20,17 @@ class Poligono {
     #canvas;
     #ctx;
     #result;
+    #centroide;
+    #puntos; // Guardamos los puntos generados
+    #centroideVisible; // Estado de visibilidad del centroide
 
     constructor(canvasElement, resultElement) {
         this.#canvas = canvasElement;
-        this.#ctx = this.#canvas.getContext('2d');
+        this.#ctx = canvasElement.getContext('2d');
         this.#result = resultElement;
+        this.#centroide = null; // Inicializamos el centroide como null
+        this.#puntos = []; // Inicializamos los puntos como un arreglo vacío
+        this.#centroideVisible = false; // Inicializamos el estado de visibilidad del centroide
     }
 
     #generarPuntos(cantidad) {
@@ -51,47 +57,25 @@ class Poligono {
 
     #dibujarPoligono() {
         const cantidad = parseInt(document.getElementById('cantidadPuntos').value);
-        const puntos = this.#generarPuntos(cantidad);
+        this.#puntos = this.#generarPuntos(cantidad); // Guardamos los puntos generados
 
-        // Limpiar el canvas
+        // Limpiar canvas
         this.#ctx.clearRect(0, 0, this.#canvas.width, this.#canvas.height);
 
-        // Dibujar el polígono
+        this.#ctx.fillStyle = 'rgba(0, 0, 255, 0.3)';
+        this.#ctx.strokeStyle = 'black';
         this.#ctx.beginPath();
-        puntos.forEach((p, index) => {
-            const x = p.getX();
-            const y = p.getY();
-            if (index === 0) {
-                this.#ctx.moveTo(x, y);
-            } else {
-                this.#ctx.lineTo(x, y);
-            }
+        this.#ctx.moveTo(this.#puntos[0].getX(), this.#puntos[0].getY());
+        
+        this.#puntos.forEach(p => {
+            this.#ctx.lineTo(p.getX(), p.getY());
         });
         this.#ctx.closePath();
-        this.#ctx.fillStyle = 'rgba(0, 0, 255, 0.3)';
         this.#ctx.fill();
-        this.#ctx.strokeStyle = 'black';
         this.#ctx.stroke();
 
         // Calcular el centroide
-        const centroide = this.#calcularCentroide(puntos);
-        
-        // Dibujar líneas desde cada punto al centroide
-        puntos.forEach(p => {
-            this.#ctx.beginPath();
-            this.#ctx.moveTo(p.getX(), p.getY());
-            this.#ctx.lineTo(centroide.getX(), centroide.getY());
-            this.#ctx.strokeStyle = 'red';
-            this.#ctx.stroke();
-        });
-
-        // Dibujar el centroide
-        this.#ctx.beginPath();
-        this.#ctx.arc(centroide.getX(), centroide.getY(), 7, 0, 2 * Math.PI);
-        this.#ctx.fillStyle = 'green';
-        this.#ctx.fill();
-        this.#ctx.stroke();
-
+        this.#centroide = this.#calcularCentroide(this.#puntos);
         this.#result.textContent = ''; // Limpiar resultado
     }
 
@@ -100,17 +84,32 @@ class Poligono {
     }
 
     mostrarCentroide() {
-        const cantidad = parseInt(document.getElementById('cantidadPuntos').value);
-        const puntos = this.#generarPuntos(cantidad);
-        const centroide = this.#calcularCentroide(puntos);
+        if (!this.#centroide) return; // Si no hay centroide, salir
 
-        this.#ctx.beginPath();
-        this.#ctx.arc(centroide.getX(), centroide.getY(), 7, 0, 2 * Math.PI);
-        this.#ctx.fillStyle = 'green';
-        this.#ctx.fill();
-        this.#ctx.stroke();
+        if (this.#centroideVisible) {
+            // Si el centroide ya es visible, lo ocultamos
+            this.#ctx.clearRect(0, 0, this.#canvas.width, this.#canvas.height); // Limpiar el canvas
+            this.#dibujarPoligono(); // Volver a dibujar el polígono
+            this.#result.textContent = ''; // Limpiar resultado
+        } else {
+            // Dibujar líneas desde cada punto al centroide
+            this.#ctx.strokeStyle = 'red';
+            this.#puntos.forEach(p => {
+                this.#ctx.beginPath();
+                this.#ctx.moveTo(p.getX(), p.getY());
+                this.#ctx.lineTo(this.#centroide.getX(), this.#centroide.getY());
+                this.#ctx.stroke();
+            });
 
-        this.#result.textContent = `Centroide: (${centroide.getX().toFixed(2)}, ${centroide.getY().toFixed(2)})`;
+            // Dibujar el centroide
+            this.#ctx.fillStyle = 'green';
+            this.#ctx.beginPath();
+            this.#ctx.arc(this.#centroide.getX(), this.#centroide.getY(), 7, 0, Math.PI * 2);
+            this.#ctx.fill();
+        }
+
+        // Cambiar el estado de visibilidad del centroide
+        this.#centroideVisible = !this.#centroideVisible;
     }
 }
 
