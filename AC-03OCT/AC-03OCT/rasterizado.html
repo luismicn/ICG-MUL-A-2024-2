@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convexo o Cóncavo</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Cambiado a flex-start */
+            height: auto; /* Cambiado a auto */
+            min-height: 100vh; /* Asegurarse de que el body ocupe al menos toda la altura */
+            margin: 0;
+            font-family: Arial, sans-serif;
+            overflow: auto; /* Permitir desplazamiento si es necesario */
+        }
+        canvas {
+            border: 1px solid black;
+            margin-top: 20px;
+            max-width: 100%; /* Asegurarse de que el canvas no exceda el ancho */
+        }
+        button {
+            margin-top: 20px;
+        }
+        label {
+            margin-right: 10px;
+        }
+        #result {
+            font-weight: bold;
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Polígonos Convexo o Cóncavo</h2>
+<label for="cantidadPuntos">Número de puntos:</label>
+<input type="number" id="cantidadPuntos" min="3" max="100" value="3">
+<br><br>
+<canvas id="polygonCanvas" width="800" height="800"></canvas>
+<p id="result"></p>
+<button id="restoreButton">Dibujar Polígono</button>
+<button id="centroideButton">Mostrar Centroide</button>
+
+<script src="rasterizado.js"></script>
+
+</body>
+</html>
