@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convexo o Cóncavo</title>
+    <style>
+        .canvas {
+            position: center;
+            border: 1px solid black;
+            width: 800px;
+            height: 700px;
+        }
+        .point {
+            width: 10px; /* Tamaño de los puntos */
+            height: 10px;
+            position: absolute;
+        }
+        .centroide {
+            background-color: red; /* Color del centroide */
+        }
+        button {
+            margin-top: 20px;
+        }
+        label {
+            margin-right: 10px;
+        }
+        #result {
+            font-weight: bold; /* Negrita */
+            font-size: 24px; /* Tamaño de fuente más grande */
+            margin-top: 20px; /* Espacio superior */
+        }
+    </style>
+</head>
+<body>
+
+<h2>Polígonos ¿Convexo o cóncavo?</h2>
+<label for="cantidadPuntos">Número de puntos:</label>
+<select id="cantidadPuntos">
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+    <option value="10">10</option>
+    <option value="11">11</option>
+    <option value="12">12</option>
+    <option value="13">13</option>
+    <option value="14">14</option>
+    <option value="15">15</option>
+    <option value="16">16</option>
+    <option value="17">17</option>
+    <option value="18">18</option>
+    <option value="19">19</option>
+    <option value="20">20</option>
+</select>
+<br><br>
+<div class="canvas" id="canvasDiv"></div>
+<p id="result"></p>
+<button id="restoreButton">Dibujar Polígono Aleatorio</button>
+<button id="centroideButton">Mostrar Centroide</button>
+
+<script src="rasterizado.js"></script>
+</body>
+</html>

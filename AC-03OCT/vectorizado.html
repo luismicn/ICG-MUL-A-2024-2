@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convexo o Cóncavo (poligonos)</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Altura completa de la ventana */
+            margin: 0; /* Eliminar márgenes por defecto */
+            font-family: Arial, sans-serif; /* Fuente por defecto */
+        }
+        canvas {
+            border: 1px solid #000; /* Borde opcional para el canvas */
+            margin-top: 20px; /* Espaciado entre el texto y el canvas */
+        }
+        svg {
+            border: 1px solid black;
+        }
+        button {
+            margin-top: 50px;
+        }
+        label {
+            margin-right: 10px;
+        }
+        #result {
+            font-weight: bold; /* Negrita */
+            font-size: 24px; /* Tamaño de fuente más grande */
+            margin-top: 20px; /* Espacio superior */
+        }
+        .centroide {
+            fill: green; /* Color del centroide */
+        }
+    </style>
+</head>
+<body>
+
+<h2>Polígonos Convexo o Cóncavo</h2>
+<label for="cantidadPuntos">Número de puntos:</label>
+<select id="cantidadPuntos">
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+    <option value="10">10</option>
+    <option value="11">11</option>
+    <option value="12">12</option>
+    <option value="13">13</option>
+    <option value="14">14</option>
+    <option value="15">15</option>
+    <option value="16">16</option>
+
+</select>
+<br><br>
+<svg id="polygonSvg" width="800" height="800"></svg>
+<p id="result"></p>
+<button id="restoreButton">Dibujar Polígono</button>
+<button id="centroideButton">Mostrar Centroide</button>
+
+<script src="vectorizado.js"></script>
+
+</body>
+</html>
